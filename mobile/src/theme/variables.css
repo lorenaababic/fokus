@@ -1,0 +1,117 @@
+/* For information on how to create your own theme, please refer to:
+http://ionicframework.com/docs/theming/ */
+:root {
+  /* FOKUS paleta */
+  --ion-color-primary: #244A42;
+  --ion-color-primary-rgb: 36, 74, 66;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #1C3B34;
+  --ion-color-primary-tint: #3A5D55;
+
+  --ion-color-secondary: #D9B96E;
+  --ion-color-secondary-rgb: 217, 185, 110;
+  --ion-color-secondary-contrast: #1C3B34;
+  --ion-color-secondary-contrast-rgb: 28, 59, 52;
+  --ion-color-secondary-shade: #BFA361;
+  --ion-color-secondary-tint: #DDC07D;
+
+  --ion-color-success: #4CAF7D;
+  --ion-color-success-rgb: 76, 175, 125;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #439A6E;
+  --ion-color-success-tint: #5EB78A;
+
+  --ion-color-danger: #D95D5D;
+  --ion-color-danger-rgb: 217, 93, 93;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #BF5252;
+  --ion-color-danger-tint: #DD6D6D;
+
+  /* Pozadine i tekst */
+  --ion-background-color: #F7F5F2;
+  --ion-background-color-rgb: 247, 245, 242;
+  --ion-text-color: #1F2723;
+  --ion-text-color-rgb: 31, 39, 35;
+
+  --ion-toolbar-background: #F7F5F2;
+  --ion-toolbar-color: #1F2723;
+
+  --ion-tab-bar-background: #FFFFFF;
+  --ion-tab-bar-color: #9CA39E;
+  --ion-tab-bar-color-selected: #244A42;
+
+  --ion-item-background: #FFFFFF;
+  --ion-card-background: #FFFFFF;
+}
+
+/* Custom klase za FOKUS stil */
+.fokus-card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin: 0 16px 12px;
+  border: 1px solid #EAE7E1;
+}
+
+.fokus-card-dark {
+  background: #244A42;
+  color: #F7F5F2;
+  border-radius: 18px;
+  padding: 18px 20px;
+  margin: 0 16px 12px;
+}
+.fokus-card-dark .muted { color: #B9C4BF; }
+
+.fokus-card-gold {
+  background: #F7F0DF;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin: 0 16px 12px;
+}
+
+.muted { color: #6E7570; font-size: 13px; }
+.small { color: #9CA39E; font-size: 12px; }
+
+.progress-track {
+  height: 7px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.fokus-card .progress-track { background: #E8EFEC; }
+.progress-fill {
+  height: 100%;
+  background: #D9B96E;
+  border-radius: 99px;
+}
+.fokus-card .progress-fill { background: #244A42; }
+
+.streak-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  background: #D9B96E;
+  color: #1C3B34;
+  font-weight: 600;
+}
+.streak-dot.empty {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.pct-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8A6F35;
+  background: #F7F0DF;
+  border-radius: 99px;
+  padding: 3px 10px;
+}

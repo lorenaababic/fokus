@@ -1,0 +1,32 @@
+# Backend (Java/Maven)
+backend/target/
+backend/.idea/
+backend/*.iml
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+
+# Web (React/Vite)
+web/node_modules/
+web/dist/
+web/.vite/
+
+# Mobile (Ionic/Capacitor)
+mobile/node_modules/
+mobile/dist/
+mobile/android/
+mobile/.angular/
+
+# Environment i ključevi (sigurnost!)
+*.env
+.env
+.env.local
+**/application-local.properties
+
+# OS / editor
+.DS_Store
+.vscode/
+*.log
+
+# Uploads (korisničke slike, ne idu u repo)
+backend/uploads/
