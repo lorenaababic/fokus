@@ -17,14 +17,14 @@ public class GoalService {
     private final ScenarioService scenarioService;
 
     public List<Goal> getByScenario(Long scenarioId) {
-        scenarioService.getById(scenarioId); // provjera vlasništva
+        scenarioService.getById(scenarioId);
         return goalRepository.findByScenarioId(scenarioId);
     }
 
     public Goal getById(Long id) {
         Goal goal = goalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Goal not found"));
-        scenarioService.getById(goal.getScenario().getId()); // provjera vlasništva
+        scenarioService.getById(goal.getScenario().getId());
         return goal;
     }
 

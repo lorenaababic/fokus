@@ -63,7 +63,6 @@ export default function VisionTab() {
           </div>
         )}
 
-        {/* Masonry grid u 2 kolone */}
         <div style={{ columnCount: 2, columnGap: 10, padding: "4px 16px 24px" }}>
           {items.map((item, i) => (
             <div key={item.id} onClick={() => setSelected(item)} style={{
@@ -89,8 +88,7 @@ export default function VisionTab() {
             </div>
           ))}
         </div>
-
-        {/* Detalj — modal */}
+        
         <IonModal isOpen={!!selected} onDidDismiss={() => setSelected(null)}>
           {selected && (
             <IonContent>

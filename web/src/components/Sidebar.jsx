@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-  LayoutGrid, CheckCircle2, LogOut, BarChart3, Image, Settings, ChevronDown
+  LayoutGrid, CheckCircle2, LogOut, BarChart3, Image, Settings, ChevronRight
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getScenarios } from "../api/scenarios";
@@ -49,27 +49,28 @@ export default function Sidebar() {
       <Link to="/checkin" className={isActive("/checkin")}>
         <CheckCircle2 size={17} strokeWidth={1.8} /> Check-in
       </Link>
-      <button className="sidebar-link" onClick={handleLogout}>
-        <LogOut size={17} strokeWidth={1.8} /> Odjava
-      </button>
-      <button className={isActive(null, "analitika")} onClick={() => goToScenarioTab("analitika")}>
-        <BarChart3 size={17} strokeWidth={1.8} /> Analitika
-      </button>
-    <Link to="/visionboard" className={isActive("/visionboard")}>
+      <Link to="/visionboard" className={isActive("/visionboard")}>
         <Image size={17} strokeWidth={1.8} /> Vision board
-    </Link>
+      </Link>
+      <Link to="/analitika" className={isActive("/analitika")}>
+        <BarChart3 size={17} strokeWidth={1.8} /> Analitika
+      </Link>
       <Link to="/postavke" className={isActive("/postavke")}>
         <Settings size={17} strokeWidth={1.8} /> Postavke
       </Link>
+      <button className="sidebar-link" onClick={handleLogout}>
+        <LogOut size={17} strokeWidth={1.8} /> Odjava
+      </button>
 
-      <div className="sidebar-footer">
+      <Link to="/postavke" className="sidebar-footer"
+        style={{ textDecoration: "none", color: "inherit" }}>
         <span className="sidebar-avatar">{user?.firstName?.[0] ?? "?"}</span>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 13, fontWeight: 600 }}>{user?.firstName}</div>
           <div className="small">Pregled profila</div>
         </div>
-        <ChevronDown size={15} color="var(--text-muted)" />
-      </div>
+        <ChevronRight size={15} color="var(--text-muted)" />
+      </Link>
     </aside>
   );
 }

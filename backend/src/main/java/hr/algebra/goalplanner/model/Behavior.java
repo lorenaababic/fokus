@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "behaviors")
 @Getter
@@ -17,6 +20,9 @@ public class Behavior {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goal_id", nullable = false)
     private Goal goal;
+
+    @OneToMany(mappedBy = "behavior", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityLog> logs = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;

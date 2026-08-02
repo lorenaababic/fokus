@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { getScenario } from "../api/scenarios";
+import { getScenario, deleteScenario } from "../api/scenarios";
 import { getGoalsByScenario, createGoal, deleteGoal } from "../api/goals";
 import GoalCard from "../components/GoalCard";
 import AnalyticsTab from "../components/AnalyticsTab";
@@ -17,6 +17,7 @@ export default function ScenarioDetailPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") ?? "ciljevi";
+  const isNew = searchParams.get("novi") === "1";
 
   const [scenario, setScenario] = useState(null);
   const [goals, setGoals] = useState([]);
@@ -33,6 +34,10 @@ export default function ScenarioDetailPage() {
     getScenario(id).then(({ data }) => setScenario(data));
     loadGoals();
   }, [id]);
+
+  useEffect(() => {
+    if (isNew) setShowForm(true);
+  }, [isNew]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -57,6 +62,14 @@ export default function ScenarioDetailPage() {
     loadGoals();
   };
 
+  const handleDeleteScenario = async () => {
+    if (!window.confirm(
+      `Obrisati scenarij "${scenario.title}" sa svim ciljevima, ponašanjima i zapisima? Ova radnja je nepovratna.`
+    )) return;
+    await deleteScenario(id);
+    navigate("/");
+  };
+
   if (!scenario) return <p className="muted">Učitavanje...</p>;
 
   return (
@@ -74,9 +87,14 @@ export default function ScenarioDetailPage() {
             {"  "}<span className="badge" style={{ marginLeft: 8 }}>{TIME_FRAME_LABELS[scenario.timeFrame]}</span>
           </p>
         </div>
-        <button className="btn btn-sm" onClick={() => navigate(`/scenarios/${id}/edit`)}>
-          ✏️ Uredi scenarij
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn btn-sm" onClick={() => navigate(`/scenarios/${id}/edit`)}>
+            ✏️ Uredi scenarij
+          </button>
+          <button className="btn btn-sm btn-danger" onClick={handleDeleteScenario}>
+            Obriši scenarij
+          </button>
+        </div>
       </div>
 
       <div className="tabs">
@@ -90,8 +108,23 @@ export default function ScenarioDetailPage() {
 
       {tab === "ciljevi" && (
         <>
+          {isNew && (
+            <div className="card" style={{ background: "var(--green-soft)", border: "none" }}>
+              <strong style={{ fontSize: 14 }}>🎉 Scenarij je kreiran!</strong>
+              <p className="small" style={{ margin: "4px 0 0" }}>
+                Sad dodaj <strong>ciljeve</strong> ovom scenariju — konkretne, mjerljive ishode koje želiš postići
+                (npr. „Istrčati 10 km"). Za svaki cilj kasnije dodaješ <strong>ponašanja</strong> koja te do njega vode.
+              </p>
+            </div>
+          )}
+
           <div className="row-between" style={{ marginBottom: 14 }}>
-            <h2>Ciljevi</h2>
+            <div>
+              <h2>Ciljevi</h2>
+              <p className="small" style={{ margin: "2px 0 0" }}>
+                Konkretni, mjerljivi ishodi unutar ovog scenarija.
+              </p>
+            </div>
             {!showForm && (
               <button className="btn btn-primary btn-sm" onClick={() => setShowForm(true)}>
                 + Novi cilj
@@ -101,19 +134,37 @@ export default function ScenarioDetailPage() {
 
           {showForm && (
             <form onSubmit={handleSubmit} className="card">
-              <input name="title" className="input" placeholder="Naziv cilja (npr. Istrčati 10km)"
+              <label className="label">Naziv cilja</label>
+              <input name="title" className="input"
+                placeholder="npr. Istrčati 10 km, Smršavjeti 5 kg, Naučiti React"
                 value={form.title} onChange={handleChange} required />
-              <input name="description" className="input" placeholder="Opis (opcionalno)"
+
+              <label className="label">Opis (nije obavezno)</label>
+              <input name="description" className="input" placeholder="Dodatni detalji o cilju"
                 value={form.description} onChange={handleChange} />
+
               <div style={{ display: "flex", gap: 8 }}>
-                <input name="category" className="input" placeholder="Kategorija (npr. zdravlje)"
-                  value={form.category} onChange={handleChange} required style={{ flex: 1 }} />
-                <input name="targetValue" type="number" step="any" className="input"
-                  placeholder="Vrijednost" value={form.targetValue} onChange={handleChange}
-                  style={{ width: 120 }} />
-                <input name="targetUnit" className="input" placeholder="Jedinica"
-                  value={form.targetUnit} onChange={handleChange} style={{ width: 110 }} />
+                <div style={{ flex: 1 }}>
+                  <label className="label">Kategorija</label>
+                  <input name="category" className="input" placeholder="npr. zdravlje"
+                    value={form.category} onChange={handleChange} required />
+                </div>
+                <div style={{ width: 120 }}>
+                  <label className="label">Ciljna vrijednost</label>
+                  <input name="targetValue" type="number" step="any" className="input"
+                    placeholder="npr. 10" value={form.targetValue} onChange={handleChange} />
+                </div>
+                <div style={{ width: 110 }}>
+                  <label className="label">Jedinica</label>
+                  <input name="targetUnit" className="input" placeholder="npr. km"
+                    value={form.targetUnit} onChange={handleChange} />
+                </div>
               </div>
+
+              <p className="small" style={{ margin: "0 0 12px" }}>
+                Ciljna vrijednost i jedinica nisu obavezne — koristi ih ako je cilj brojčano mjerljiv.
+              </p>
+
               <div style={{ display: "flex", gap: 8 }}>
                 <button type="submit" className="btn btn-primary btn-sm">Spremi cilj</button>
                 <button type="button" className="btn btn-sm" onClick={() => setShowForm(false)}>
@@ -124,9 +175,16 @@ export default function ScenarioDetailPage() {
           )}
 
           {goals.length === 0 && !showForm && (
-            <div className="card" style={{ textAlign: "center", padding: "36px 24px" }}>
+            <div className="card" style={{ textAlign: "center", padding: "40px 24px" }}>
               <div style={{ fontSize: 36 }}>🎯</div>
-              <p className="muted">Još nema ciljeva. Dodaj prvi i razloži ga na konkretna ponašanja.</p>
+              <h3 style={{ margin: "10px 0 4px" }}>Dodaj prvi cilj</h3>
+              <p className="muted" style={{ maxWidth: 420, margin: "0 auto 16px" }}>
+                Cilj je konkretan, mjerljiv ishod koji želiš postići u ovom scenariju — na primjer
+                „Istrčati 10 km". Nakon što ga dodaš, razložit ćeš ga na svakodnevna ponašanja.
+              </p>
+              <button className="btn btn-primary" onClick={() => setShowForm(true)}>
+                + Dodaj cilj
+              </button>
             </div>
           )}
 

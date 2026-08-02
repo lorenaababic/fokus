@@ -362,3 +362,86 @@ a:hover { opacity: 0.85; }
 }
 
 .sidebar-link svg { flex-shrink: 0; }
+
+/* ---------- Responzivnost za mobitel i tablet ---------- */
+@media (max-width: 768px) {
+  /* Sidebar postaje vodoravna traka na vrhu */
+  .app-layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .sidebar-brand {
+    padding: 6px 8px;
+    width: 100%;
+  }
+  .sidebar-link {
+    width: auto;
+    margin-bottom: 0;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+  /* Profil footer natrag u red, bez gornje crte */
+  .sidebar-footer {
+    margin-top: 0;
+    margin-left: auto;
+    border-top: none;
+    padding-top: 0;
+    padding-left: 8px;
+  }
+  .sidebar-footer .small { display: none; }
+
+  /* Glavni sadržaj — manji razmaci */
+  .main-content {
+    padding: 20px 16px 60px;
+    max-width: 100%;
+  }
+
+  /* Kartice jedna ispod druge */
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Naslovi malo manji */
+  h1 { font-size: 22px; }
+
+  /* Tablica se može pomicati vodoravno umjesto da iskoči iz zaslona */
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Vision board — dvije po redu na mobitelu */
+  .vision-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* Tabovi se mogu pomicati vodoravno */
+  .tabs {
+    overflow-x: auto;
+  }
+  .tab { white-space: nowrap; }
+}
+
+/* Vrlo uski zasloni (mali mobiteli) */
+@media (max-width: 420px) {
+  .vision-grid {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 16px 16px;
+  }
+}

@@ -42,7 +42,9 @@ public class AnalyticsService {
             for (Behavior behavior : goal.getBehaviors()) {
                 long expected = expectedCount(behavior, start, end);
                 long actual = countCompleted(behavior.getId(), start, end);
-                double rate = expected == 0 ? 0 : Math.min(100.0, actual * 100.0 / expected);
+                double rate = expected == 0
+                        ? 100.0
+                        : Math.min(100.0, actual * 100.0 / expected);
                 double deviation = rate - 100.0;
 
                 behaviorProgressList.add(new ScenarioProgressResponse.BehaviorProgress(
@@ -88,7 +90,7 @@ public class AnalyticsService {
         long days = ChronoUnit.DAYS.between(from, to) + 1;
         return switch (behavior.getFrequency()) {
             case DAILY -> days * behavior.getTargetCount();
-            case WEEKLY -> Math.max(1, days / 7) * behavior.getTargetCount();
+            case WEEKLY -> Math.round(days / 7.0 * behavior.getTargetCount());
         };
     }
 

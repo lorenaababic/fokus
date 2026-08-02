@@ -9,6 +9,7 @@ import ScenarioDetailPage from "./pages/ScenarioDetailPage";
 import CheckInPage from "./pages/CheckInPage";
 import SettingsPage from "./pages/SettingsPage";
 import VisionBoardOverviewPage from "./pages/VisionBoardOverviewPage";
+import AnalyticsOverviewPage from "./pages/AnalyticsOverviewPage";
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/scenarios/:id/edit" element={<PrivateRoute><ScenarioFormPage /></PrivateRoute>} />
           <Route path="/postavke" element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
           <Route path="/visionboard" element={<PrivateRoute><VisionBoardOverviewPage /></PrivateRoute>} />
+          <Route path="/analitika" element={<PrivateRoute><AnalyticsOverviewPage /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

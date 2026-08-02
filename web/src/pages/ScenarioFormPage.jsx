@@ -36,34 +36,50 @@ export default function ScenarioFormPage() {
     try {
       if (isEdit) {
         await updateScenario(id, form);
+        navigate(`/scenarios/${id}`);
       } else {
-        await createScenario(form);
+        const { data } = await createScenario(form);
+        navigate(`/scenarios/${data.id}?tab=ciljevi&novi=1`);
       }
-      navigate("/");
     } catch {
       setError("Greška pri spremanju. Provjeri podatke.");
     }
   };
 
   return (
-    <div style={{ maxWidth: 540 }}>
+    <div style={{ maxWidth: 560 }}>
       <Link to="/" className="small">← Natrag na scenarije</Link>
       <h1 style={{ margin: "10px 0 4px" }}>
         {isEdit ? "Uredi scenarij" : "Novi scenarij"}
       </h1>
-      <p className="muted" style={{ marginBottom: 20 }}>
-        Opiši kako izgleda tvoj život na kraju ovog razdoblja.
+      <p className="muted" style={{ marginBottom: 16 }}>
+        Scenarij je šire životno područje na kojem želiš raditi kroz duže razdoblje.
       </p>
+
+      {!isEdit && (
+        <div className="card" style={{ background: "var(--green-soft)", border: "none", marginBottom: 16 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Kako je sve povezano?</div>
+          <p className="small" style={{ margin: 0, lineHeight: 1.7 }}>
+            <strong>Scenarij</strong> (npr. „Zdraviji život") →{" "}
+            <strong>Cilj</strong> (npr. „Istrčati 10 km") →{" "}
+            <strong>Ponašanje</strong> (npr. „Trčanje 3× tjedno")
+          </p>
+          <p className="small" style={{ margin: "8px 0 0" }}>
+            Sad kreiraš scenarij (najširu razinu), a u sljedećem koraku dodaješ mu ciljeve.
+          </p>
+        </div>
+      )}
 
       <div className="card">
         <form onSubmit={handleSubmit}>
-          <label className="label">Naziv</label>
-          <input name="title" className="input" placeholder="npr. Zdraviji život"
+          <label className="label">Naziv scenarija</label>
+          <input name="title" className="input"
+            placeholder="npr. Zdraviji život, Napredak u karijeri, Financijska stabilnost"
             value={form.title} onChange={handleChange} required />
 
-          <label className="label">Opis</label>
-          <textarea name="description" className="textarea" rows={4}
-            placeholder="Kako izgleda tvoj život na kraju ovog scenarija?"
+          <label className="label">Opis (nije obavezno)</label>
+          <textarea name="description" className="textarea" rows={3}
+            placeholder="Kako izgleda tvoj život na kraju ovog razdoblja?"
             value={form.description} onChange={handleChange} />
 
           <label className="label">Vremenski okvir</label>
@@ -81,7 +97,7 @@ export default function ScenarioFormPage() {
 
           <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
             <button type="submit" className="btn btn-primary">
-              {isEdit ? "Spremi promjene" : "Kreiraj scenarij"}
+              {isEdit ? "Spremi promjene" : "Kreiraj i dodaj ciljeve →"}
             </button>
             <button type="button" className="btn" onClick={() => navigate("/")}>
               Odustani

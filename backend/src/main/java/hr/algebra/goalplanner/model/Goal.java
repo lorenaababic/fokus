@@ -34,4 +34,7 @@ public class Goal {
 
     @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Behavior> behaviors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VisionBoardItem> visionBoardItems = new ArrayList<>();
 }

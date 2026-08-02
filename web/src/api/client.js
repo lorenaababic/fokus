@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "/api",
+  headers: {
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
 client.interceptors.request.use((config) => {
@@ -15,7 +18,7 @@ client.interceptors.request.use((config) => {
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    if (error.response?.status === 401) {
       localStorage.removeItem("token");
       if (window.location.pathname !== "/login") {
         window.location.href = "/login";

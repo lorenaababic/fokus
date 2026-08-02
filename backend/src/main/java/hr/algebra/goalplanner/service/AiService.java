@@ -1,12 +1,11 @@
 package hr.algebra.goalplanner.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hr.algebra.goalplanner.dto.AiSuggestionResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
 import java.util.List;
@@ -28,10 +27,20 @@ public class AiService {
                 .build();
     }
 
-    public List<AiSuggestionResponse> suggestBehaviors(String goalTitle, String description, String category) {
+    @SuppressWarnings("unchecked")
+    public List<AiSuggestionResponse> suggestBehaviors(String goalTitle,
+                                                       String description,
+                                                       String category) {
         String prompt = """
                 Korisnik ima osobni cilj: "%s" (kategorija: %s). Opis: "%s".
                 Predloži 3 do 5 konkretnih, mjerljivih ponašanja koja vode ostvarenju tog cilja.
+
+                Pravila za polja:
+                - "frequency" je "DAILY" samo ako se ponašanje radi svaki dan, inače "WEEKLY".
+                - Za "DAILY" polje "targetCount" znači koliko puta DNEVNO i gotovo uvijek iznosi 1.
+                - Za "WEEKLY" polje "targetCount" znači koliko puta TJEDNO i mora biti broj od 1 do 7.
+                - Ponašanja moraju biti realna i održiva; ne predlaži pretjerane brojeve ponavljanja.
+
                 Odgovori ISKLJUČIVO čistim JSON nizom, bez markdowna, u formatu:
                 [{"title":"...","frequency":"DAILY ili WEEKLY","targetCount":broj}]
                 Naslovi ponašanja neka budu kratki i na hrvatskom jeziku.
@@ -43,38 +52,42 @@ public class AiService {
                 "temperature", 0.7
         );
 
-        JsonNode response = restClient.post()
+        Map<String, Object> response = restClient.post()
                 .uri("/chat/completions")
                 .body(body)
                 .retrieve()
-                .body(JsonNode.class);
+                .body(Map.class);
 
-        String content = response.get("choices").get(0).get("message").get("content").asText();
-        content = content.replace("```json", "").replace("```", "").trim();
+        List<Map<String, Object>> choices = (List<Map<String, Object>>) response.get("choices");
+        Map<String, Object> message = (Map<String, Object>) choices.get(0).get("message");
+        String content = ((String) message.get("content"))
+                .replace("```json", "").replace("```", "").trim();
 
         try {
-            return objectMapper.readValue(content, new TypeReference<>() {});
+            return objectMapper.readValue(content, new TypeReference<List<AiSuggestionResponse>>() {});
         } catch (Exception e) {
             throw new IllegalStateException("AI nije vratio valjan JSON: " + content);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public byte[] generateImage(String userPrompt) {
         Map<String, Object> body = Map.of(
-                "model", "dall-e-3",
-                "prompt", "Inspirativna, estetski lijepa fotografija za vision board osobnih ciljeva: " + userPrompt,
+                "model", "gpt-image-1-mini",
+                "prompt", "Inspirativna, estetski lijepa fotografija za vision board osobnih ciljeva: "
+                        + userPrompt,
                 "n", 1,
-                "size", "1024x1024",
-                "response_format", "b64_json"
+                "size", "1024x1024"
         );
 
-        JsonNode response = restClient.post()
+        Map<String, Object> response = restClient.post()
                 .uri("/images/generations")
                 .body(body)
                 .retrieve()
-                .body(JsonNode.class);
+                .body(Map.class);
 
-        String b64 = response.get("data").get(0).get("b64_json").asText();
+        List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
+        String b64 = (String) data.get(0).get("b64_json");
         return Base64.getDecoder().decode(b64);
     }
 }

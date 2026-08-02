@@ -44,6 +44,9 @@ public class Scenario {
     @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Goal> goals = new ArrayList<>();
 
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VisionBoardItem> visionBoardItems = new ArrayList<>();
+
     public enum TimeFrame {
         THREE_MONTHS, SIX_MONTHS, ONE_YEAR
     }
